@@ -1,5 +1,5 @@
 # ======================================================================
-# thesis-engine -- Scheduled Analysis Workflow
+# markit-engine -- Scheduled Analysis Workflow
 #
 # HOW TO USE:
 # 1. Copy this file to your PRIVATE repo (not the public fork)
@@ -36,25 +36,28 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run analyzer
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
-          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
-          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-          REDDIT_USER_AGENT: thesis-engine/1.0
-          QUIVER_API_KEY: ${{ secrets.QUIVER_API_KEY }}
-          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          VOYAGE_API_KEY:       ${{ secrets.VOYAGE_API_KEY }}
+          FINNHUB_API_KEY:      ${{ secrets.FINNHUB_API_KEY }}
         run: python analyzer.py --once
 
-      - name: Commit logs
+      - name: Commit logs and vector store
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add logs/ context/ -f 2>/dev/null || true
-          git diff --staged --quiet 2>/dev/null || (git commit -m "Update logs -- $(date -u '+%Y-%m-%d %H:%M UTC')" && git push) || true
+          git add logs/ context/ vector_store/ -f 2>/dev/null || true
+          git diff --staged --quiet 2>/dev/null || \
+            (git commit -m "Update logs+index -- $(date -u '+%Y-%m-%d %H:%M UTC')" && \
+             git pull --rebase origin HEAD && git push) || true
