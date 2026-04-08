@@ -1,0 +1,6 @@
+# ChromaDB vector store — treat binary segment files as binary blobs.
+# This suppresses noisy diffs and resolves merge conflicts by keeping
+# the latest committed version (the most recent GitHub Actions run).
+vector_store/**  binary
+vector_store/**  -diff
+vector_store/**  merge=ours
