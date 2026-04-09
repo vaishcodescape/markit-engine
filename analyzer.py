@@ -36,11 +36,11 @@ from modules.macro import fetch_macro
 from modules.news_rss import fetch_news_rss
 from modules.press_releases import fetch_press_releases
 from modules.prices import fetch_prices
+from modules.rag_agent import RAGAgent
 from modules.sustainability import extract_sustainability_signals
 from modules.technicals import calculate_technicals
 from modules.wikipedia import fetch_wikipedia_views
 from modules.world_news import fetch_world_news
-from modules.rag_agent import RAGAgent
 
 _rag = RAGAgent(persist_dir="vector_store/")
 

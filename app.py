@@ -66,21 +66,27 @@ st.markdown("""
   }
   [data-testid="stMetricLabel"] {
     font-size: 0.68rem !important;
-    color: #444 !important;
+    color: #555 !important;
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
   [data-testid="stMetricDelta"] { font-size: 0.78rem !important; }
   [data-testid="metric-container"] {
     background: #0d0d0d;
-    border: 1px solid #1a1a1a;
+    border: 1px solid #1e1e1e;
+    border-top: 1px solid #2a2a2a;
     border-radius: 6px;
     padding: 14px 18px 10px;
+    transition: border-color 0.15s;
+  }
+  [data-testid="metric-container"]:hover {
+    border-color: #333;
+    border-top-color: #3a3a3a;
   }
 
   /* Tabs */
   [data-testid="stTabs"] [role="tab"] {
-    color: #444 !important;
+    color: #3a3a3a !important;
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -88,6 +94,10 @@ st.markdown("""
     padding: 10px 22px;
     border-bottom: 2px solid transparent;
     background: transparent !important;
+    transition: color 0.15s;
+  }
+  [data-testid="stTabs"] [role="tab"]:hover {
+    color: #888 !important;
   }
   [data-testid="stTabs"] [role="tab"][aria-selected="true"] {
     color: #fff !important;
@@ -140,10 +150,12 @@ st.markdown("""
   /* Expander */
   [data-testid="stExpander"] {
     background: #0a0a0a;
-    border: 1px solid #1a1a1a !important;
+    border: 1px solid #1e1e1e !important;
     border-radius: 6px;
+    transition: border-color 0.15s;
   }
-  [data-testid="stExpander"] summary { color: #444 !important; font-size: 0.75rem !important; }
+  [data-testid="stExpander"]:hover { border-color: #2a2a2a !important; }
+  [data-testid="stExpander"] summary { color: #555 !important; font-size: 0.75rem !important; }
 
   /* Progress bar */
   [data-testid="stProgress"] > div > div { background: #fff !important; }
@@ -155,10 +167,10 @@ st.markdown("""
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #2a2a2a;
+    color: #4a4a4a;
     padding-bottom: 8px;
-    border-bottom: 1px solid #111;
-    margin-bottom: 14px;
+    border-bottom: 1px solid #1a1a1a;
+    margin-bottom: 16px;
   }
 
   .ticker-hero {
@@ -170,7 +182,7 @@ st.markdown("""
   }
   .ticker-sub {
     font-size: 0.68rem;
-    color: #333;
+    color: #4a4a4a;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-top: 4px;
@@ -178,7 +190,7 @@ st.markdown("""
 
   .analysis-terminal {
     background: #030303;
-    border: 1px solid #151515;
+    border: 1px solid #1a1a1a;
     border-radius: 6px;
     padding: 24px 28px;
     font-family: "SF Mono", "Fira Code", Menlo, "Cascadia Code", monospace;
@@ -188,7 +200,12 @@ st.markdown("""
     color: #999;
     max-height: 660px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #222 #030303;
   }
+  .analysis-terminal::-webkit-scrollbar { width: 4px; }
+  .analysis-terminal::-webkit-scrollbar-track { background: #030303; }
+  .analysis-terminal::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
   .hl-intact { color: #3ddc84; font-weight: 700; }
   .hl-shaken { color: #f5c542; font-weight: 700; }
   .hl-broken { color: #ff6b6b; font-weight: 700; }
@@ -197,11 +214,11 @@ st.markdown("""
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #0d0d0d;
+    padding: 9px 0;
+    border-bottom: 1px solid #111;
   }
-  .stat-lbl { font-size: 0.68rem; color: #333; letter-spacing: 0.04em; }
-  .stat-val { font-size: 0.82rem; font-weight: 600; color: #bbb; }
+  .stat-lbl { font-size: 0.68rem; color: #4a4a4a; letter-spacing: 0.04em; }
+  .stat-val { font-size: 0.82rem; font-weight: 600; color: #ccc; }
 
   .pill {
     display: inline-block;
@@ -209,34 +226,38 @@ st.markdown("""
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 2px 7px;
+    padding: 2px 8px;
     border-radius: 20px;
     margin-right: 4px;
   }
   .pill-buy  { background: #0d2218; color: #3ddc84; border: 1px solid #1a4a32; }
   .pill-sell { background: #2a0000; color: #ff6b6b; border: 1px solid #4a0000; }
-  .pill-hold { background: #111;    color: #444;    border: 1px solid #1c1c1c; }
+  .pill-hold { background: #111;    color: #555;    border: 1px solid #222; }
 
   .news-item {
-    padding: 7px 0 7px 10px;
-    border-bottom: 1px solid #0d0d0d;
+    padding: 9px 0 9px 12px;
+    border-bottom: 1px solid #0f0f0f;
     font-size: 0.75rem;
-    line-height: 1.4;
+    line-height: 1.5;
+    transition: background 0.1s;
   }
+  .news-item:hover { background: rgba(255,255,255,0.015); }
   .news-pos { border-left: 2px solid #3ddc84; }
   .news-neg { border-left: 2px solid #ff6b6b; }
-  .news-neu { border-left: 2px solid #1c1c1c; }
-  .news-src { font-size: 0.62rem; color: #2a2a2a; letter-spacing: 0.06em; margin-bottom: 2px; }
-  .news-ttl { color: #aaa; }
+  .news-neu { border-left: 2px solid #252525; }
+  .news-src { font-size: 0.62rem; color: #3a3a3a; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .news-ttl { color: #bbb; }
 
   .wl-card {
     background: #080808;
-    border: 1px solid #141414;
+    border: 1px solid #1a1a1a;
     border-radius: 6px;
     padding: 14px;
+    transition: border-color 0.15s;
   }
+  .wl-card:hover { border-color: #2a2a2a; }
   .wl-ticker { font-size: 1.1rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-  .wl-reason { font-size: 0.7rem; color: #333; margin-top: 5px; line-height: 1.45; }
+  .wl-reason { font-size: 0.7rem; color: #4a4a4a; margin-top: 5px; line-height: 1.5; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -433,10 +454,9 @@ def analyst_donut(f: dict) -> go.Figure:
         hovertemplate="%{label}: %{value}<extra></extra>",
     ))
     fig.update_layout(
-        **PLOTLY_BASE,
+        **{**PLOTLY_BASE, "margin": dict(l=0, r=0, t=0, b=0)},
         height=120,
         showlegend=False,
-        margin=dict(l=0, r=0, t=0, b=0),
     )
     return fig
 
@@ -454,9 +474,9 @@ def render_sidebar(portfolio: dict, logs: list[dict]) -> tuple[bool, bool]:
         if portfolio:
             meta = portfolio.get("meta", {})
             st.markdown(
-                f"<div style='font-size:0.62rem;color:#2a2a2a;text-transform:uppercase;"
+                f"<div style='font-size:0.62rem;color:#444;text-transform:uppercase;"
                 f"letter-spacing:0.12em;margin-bottom:3px;'>Goal</div>"
-                f"<div style='font-size:0.75rem;color:#666;margin-bottom:18px;line-height:1.4;'>"
+                f"<div style='font-size:0.75rem;color:#777;margin-bottom:18px;line-height:1.4;'>"
                 f"{meta.get('investor_goal','—')[:80]}</div>",
                 unsafe_allow_html=True,
             )
@@ -464,7 +484,7 @@ def render_sidebar(portfolio: dict, logs: list[dict]) -> tuple[bool, bool]:
             watchlist = [s["ticker"] for s in portfolio.get("watchlist", [])]
 
             st.markdown(
-                "<div style='font-size:0.62rem;color:#2a2a2a;text-transform:uppercase;"
+                "<div style='font-size:0.62rem;color:#444;text-transform:uppercase;"
                 "letter-spacing:0.12em;margin-bottom:6px;'>Portfolio</div>",
                 unsafe_allow_html=True,
             )
@@ -476,7 +496,7 @@ def render_sidebar(portfolio: dict, logs: list[dict]) -> tuple[bool, bool]:
                 )
             if watchlist:
                 st.markdown(
-                    "<div style='font-size:0.62rem;color:#2a2a2a;text-transform:uppercase;"
+                    "<div style='font-size:0.62rem;color:#444;text-transform:uppercase;"
                     "letter-spacing:0.12em;margin:14px 0 6px;'>Watchlist</div>",
                     unsafe_allow_html=True,
                 )
@@ -491,17 +511,17 @@ def render_sidebar(portfolio: dict, logs: list[dict]) -> tuple[bool, bool]:
         mode    = "WEEKEND" if is_weekend() else "WEEKDAY"
         now_str = datetime.now().strftime("%b %d  %H:%M")
         st.markdown(
-            f"<div style='font-size:0.65rem;color:#2a2a2a;line-height:2.2;'>"
-            f"Mode &nbsp;&nbsp;<span style='color:#555;'>{mode}</span><br>"
-            f"Now &nbsp;&nbsp;&nbsp;<span style='color:#555;'>{now_str}</span>",
+            f"<div style='font-size:0.65rem;color:#444;line-height:2.2;'>"
+            f"Mode &nbsp;&nbsp;<span style='color:#777;'>{mode}</span><br>"
+            f"Now &nbsp;&nbsp;&nbsp;<span style='color:#777;'>{now_str}</span>",
             unsafe_allow_html=True,
         )
         if logs:
             try:
                 last_dt = datetime.fromisoformat(logs[-1]["timestamp"])
                 st.markdown(
-                    f"<span style='font-size:0.65rem;color:#2a2a2a;'>"
-                    f"Last run &nbsp;<span style='color:#444;'>"
+                    f"<span style='font-size:0.65rem;color:#444;'>"
+                    f"Last run &nbsp;<span style='color:#666;'>"
                     f"{last_dt.strftime('%b %d %H:%M')}</span></span>",
                     unsafe_allow_html=True,
                 )
@@ -517,7 +537,7 @@ def render_sidebar(portfolio: dict, logs: list[dict]) -> tuple[bool, bool]:
             st.rerun()
 
         st.markdown(
-            "<div style='font-size:0.6rem;color:#1c1c1c;margin-top:14px;'>cache 5 min</div>",
+            "<div style='font-size:0.6rem;color:#333;margin-top:14px;'>cache 5 min</div>",
             unsafe_allow_html=True,
         )
 
@@ -543,7 +563,7 @@ def tab_overview(portfolio: dict, data: dict, logs: list[dict]) -> None:
         c4.metric("Positions",       len(portfolio["portfolio"]))
     else:
         st.markdown(
-            "<div style='font-size:0.75rem;color:#2a2a2a;padding:10px 0;'>"
+            "<div style='font-size:0.75rem;color:#444;padding:10px 0;'>"
             "Price data unavailable — markets may be closed.</div>",
             unsafe_allow_html=True,
         )
@@ -685,9 +705,9 @@ def tab_analysis(portfolio: dict, data: dict, logs: list[dict], run_btn: bool) -
             response_ts = "unknown"
         if response:
             st.markdown(
-                f"<div style='font-size:0.68rem;color:#2a2a2a;margin-bottom:14px;'>"
+                f"<div style='font-size:0.68rem;color:#444;margin-bottom:14px;'>"
                 f"Showing cached response from {response_ts} — "
-                f"click <strong style='color:#444;'>Run Analysis</strong> for a fresh one.</div>",
+                f"click <strong style='color:#777;'>Run Analysis</strong> for a fresh one.</div>",
                 unsafe_allow_html=True,
             )
 
@@ -716,7 +736,7 @@ def tab_analysis(portfolio: dict, data: dict, logs: list[dict], run_btn: bool) -
 
     if logs:
         st.markdown(
-            f"<div style='font-size:0.65rem;color:#1c1c1c;margin-top:18px;'>"
+            f"<div style='font-size:0.65rem;color:#3a3a3a;margin-top:18px;'>"
             f"{len(logs)} runs logged · "
             f"{sum(1 for e in logs if e.get('alert_sent'))} alerts fired</div>",
             unsafe_allow_html=True,
@@ -741,7 +761,7 @@ def tab_signals(portfolio: dict, data: dict) -> None:
         st.markdown(
             f"<div style='font-size:0.95rem;font-weight:800;color:#fff;"
             f"letter-spacing:-0.02em;padding:4px 0 2px;'>{ticker}"
-            f"<span style='font-size:0.68rem;font-weight:400;color:#2a2a2a;"
+            f"<span style='font-size:0.68rem;font-weight:400;color:#4a4a4a;"
             f"margin-left:10px;'>{stock['name']}</span></div>",
             unsafe_allow_html=True,
         )
@@ -757,7 +777,7 @@ def tab_signals(portfolio: dict, data: dict) -> None:
             t_news = news.get(ticker, [])
             if not t_news:
                 st.markdown(
-                    "<div style='font-size:0.7rem;color:#1c1c1c;'>No recent news</div>",
+                    "<div style='font-size:0.7rem;color:#3a3a3a;'>No recent news</div>",
                     unsafe_allow_html=True,
                 )
             for item in t_news[:5]:
@@ -806,7 +826,7 @@ def tab_signals(portfolio: dict, data: dict) -> None:
                     )
             else:
                 st.markdown(
-                    "<div style='font-size:0.7rem;color:#1c1c1c;'>Technicals N/A</div>",
+                    "<div style='font-size:0.7rem;color:#3a3a3a;'>Technicals N/A</div>",
                     unsafe_allow_html=True,
                 )
 
@@ -850,7 +870,7 @@ def tab_signals(portfolio: dict, data: dict) -> None:
                     )
             else:
                 st.markdown(
-                    "<div style='font-size:0.7rem;color:#1c1c1c;'>No insider activity</div>",
+                    "<div style='font-size:0.7rem;color:#3a3a3a;'>No insider activity</div>",
                     unsafe_allow_html=True,
                 )
 
@@ -911,7 +931,7 @@ def tab_signals(portfolio: dict, data: dict) -> None:
                     f"letter-spacing:0.12em;'>[{label}]</span> "
                     f"<span style='color:#555;font-size:0.72rem;'>{ticker}</span> "
                     f"<span style='color:#bbb;font-size:0.78rem;'>{pr.get('title','')}</span>"
-                    f"<div style='font-size:0.65rem;color:#2a2a2a;margin-top:3px;'>"
+                    f"<div style='font-size:0.65rem;color:#3a3a3a;margin-top:3px;'>"
                     f"{pr.get('date','?')} · {pr.get('source','?')}</div>"
                     f"{summary}</div>",
                     unsafe_allow_html=True,
@@ -925,7 +945,7 @@ def tab_macro(data: dict, logs: list[dict]) -> None:
 
     if not macro or macro.get("error"):
         st.markdown(
-            "<div style='font-size:0.75rem;color:#2a2a2a;padding:20px 0;'>"
+            "<div style='font-size:0.75rem;color:#444;padding:20px 0;'>"
             "Macro data unavailable — markets may be closed.</div>",
             unsafe_allow_html=True,
         )

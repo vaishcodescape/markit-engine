@@ -1,6 +1,5 @@
 """Tests for rag_utils — document builders and formatters (no API calls needed)."""
 
-import pytest
 
 from modules.rag_utils import (
     build_analysis_doc,

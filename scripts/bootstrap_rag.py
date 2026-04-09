@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from modules.rag_agent import RAGAgent
-from modules.rag_utils import build_analysis_doc, build_context_doc, chunk_text
+from modules.rag_utils import build_context_doc, chunk_text
 
 LOGS_FILE = "logs/stock_analysis.jsonl"
 CONTEXT_DIR = "context"
