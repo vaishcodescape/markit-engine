@@ -7,9 +7,8 @@ python analyzer.py --once --test
 ```
 
 ![UI](https://img.shields.io/badge/UI-Streamlit-black?style=flat-square)
-![AI](https://img.shields.io/badge/AI-Claude%20Sonnet-black?style=flat-square)
-![CI](https://img.shields.io/github/actions/workflow/status/avaishcodescape/markit-engine/ci.yml?style=flat-square&label=CI)
-
+![Anthropic SDK](https://img.shields.io/badge/AI-Claude%20Sonnet-black?style=flat-square)
+ 
 ---
 
 ## What it does
