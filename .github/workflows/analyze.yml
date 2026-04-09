@@ -11,7 +11,7 @@
 # and once on Sunday evening for weekend prep.
 # ======================================================================
 
-name: thesis-engine
+name: markit-engine
 
 on:
   schedule:
