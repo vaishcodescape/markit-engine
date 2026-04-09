@@ -5,10 +5,6 @@ An AI-powered portfolio analysis engine that monitors 14 data layers in parallel
 ```
 python analyzer.py --once --test
 ```
-
-![UI](https://img.shields.io/badge/UI-Streamlit-black?style=flat-square)
-![Anthropic SDK](https://img.shields.io/badge/AI-Claude%20Sonnet-black?style=flat-square)
- 
 ---
 
 ## What it does
