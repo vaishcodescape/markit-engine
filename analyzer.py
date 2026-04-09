@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-thesis-engine -- Main Orchestrator
+markit-engine -- Main Orchestrator
 
-Runs 14 data layers in parallel, assembles a structured prompt for Claude,
-and sends email alerts when material developments affect your investment thesis.
+Runs data layers in parallel, assembles a structured prompt for Claude,
+and logs alerts when material developments affect your investment thesis.
 
 Usage:
     python analyzer.py --once           Run once and exit
-    python analyzer.py --once --test    Run without sending alerts (print only)
+    python analyzer.py --once --test    Run without logging alerts (print only)
     python analyzer.py --loop           Run every hour (local scheduler)
 """
 
@@ -26,7 +26,7 @@ load_dotenv()
 
 import anthropic
 
-from modules.alerts import log_notification, send_digest, send_urgent_alert
+from modules.alerts import log_notification
 from modules.congress_trades import fetch_congress_trades
 from modules.fundamentals import fetch_fundamentals
 from modules.google_trends import fetch_google_trends
@@ -36,7 +36,6 @@ from modules.macro import fetch_macro
 from modules.news_rss import fetch_news_rss
 from modules.press_releases import fetch_press_releases
 from modules.prices import fetch_prices
-from modules.reddit import fetch_reddit_sentiment
 from modules.sustainability import extract_sustainability_signals
 from modules.technicals import calculate_technicals
 from modules.wikipedia import fetch_wikipedia_views
@@ -96,7 +95,6 @@ def fetch_all_data(portfolio, weekend=False):
         "news_rss": lambda: fetch_news_rss(all_tickers),
         "press_releases": lambda: fetch_press_releases(tickers, portfolio),
         "world_news": lambda: fetch_world_news(portfolio),
-        "reddit": lambda: fetch_reddit_sentiment(all_tickers),
         "google_trends": lambda: fetch_google_trends(all_tickers),
         "wikipedia": lambda: fetch_wikipedia_views(tickers, portfolio),
         "congress_trades": lambda: fetch_congress_trades(tickers, portfolio),
@@ -262,27 +260,8 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
             lines.append(f"  [{theme}] avg tone: {td.get('avg_tone','N/A')}")
     lines.append("")
 
-    # -- Layer 8: Reddit --
-    lines.append("=== LAYER 8: REDDIT SENTIMENT ===")
-    reddit = data.get("reddit", {})
-    for stock in portfolio["portfolio"]:
-        t = stock["ticker"]
-        r = reddit.get(t, {})
-        if r and not r.get("error"):
-            spike = " **SPIKE**" if r.get("spike") else ""
-            lines.append(
-                f"{t}: {r.get('mentions_24h',0)} mentions/24h "
-                f"({r.get('velocity_pct',0):+.0f}% vs avg){spike} | "
-                f"{r.get('bullish_pct',50):.0f}% bullish"
-            )
-            if r.get("top_post"):
-                p = r["top_post"]
-                q = "(Quality DD)" if p.get("quality") else ""
-                lines.append(f'  Top: "{p["title"]}" ({p.get("score",0)} pts, r/{p.get("subreddit","?")}) {q}')
-    lines.append("")
-
-    # -- Layer 9: Google Trends --
-    lines.append("=== LAYER 9: GOOGLE TRENDS ===")
+    # -- Layer 8: Google Trends --
+    lines.append("=== LAYER 8: GOOGLE TRENDS ===")
     trends = data.get("google_trends", {})
     for stock in portfolio["portfolio"]:
         t = stock["ticker"]
@@ -295,8 +274,8 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
             )
     lines.append("")
 
-    # -- Layer 10: Wikipedia --
-    lines.append("=== LAYER 10: WIKIPEDIA PAGE VIEWS ===")
+    # -- Layer 9: Wikipedia --
+    lines.append("=== LAYER 9: WIKIPEDIA PAGE VIEWS ===")
     wiki = data.get("wikipedia", {})
     for stock in portfolio["portfolio"]:
         t = stock["ticker"]
@@ -309,9 +288,9 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
             )
     lines.append("")
 
-    # -- Layer 11: Hedge Funds --
+    # -- Layer 10: Hedge Funds --
     if not weekend:
-        lines.append("=== LAYER 11: HEDGE FUND 13F (45-day lag) ===")
+        lines.append("=== LAYER 10: HEDGE FUND 13F (45-day lag) ===")
         hf = data.get("hedge_funds", {})
         for stock in portfolio["portfolio"]:
             t = stock["ticker"]
@@ -323,9 +302,9 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
                 )
         lines.append("")
 
-    # -- Layer 12: Insider Trades --
+    # -- Layer 11: Insider Trades --
     if not weekend:
-        lines.append("=== LAYER 12: INSIDER TRADES (Form 4, last 90 days) ===")
+        lines.append("=== LAYER 11: INSIDER TRADES (Form 4, last 90 days) ===")
         insider = data.get("insider_trades", {})
         for stock in portfolio["portfolio"]:
             t = stock["ticker"]
@@ -351,8 +330,8 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
                     )
         lines.append("")
 
-    # -- Layer 13: Congress Trades --
-    lines.append("=== LAYER 13: CONGRESS TRADES ===")
+    # -- Layer 12: Congress Trades --
+    lines.append("=== LAYER 12: CONGRESS TRADES ===")
     congress = data.get("congress_trades", {})
     any_ct = False
     for stock in portfolio["portfolio"]:
@@ -372,8 +351,8 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
         lines.append("No recent congress trades reported.")
     lines.append("")
 
-    # -- Layer 14: Sustainability / ESG --
-    lines.append("=== LAYER 14: SUSTAINABILITY & ESG SIGNALS ===")
+    # -- Layer 13: Sustainability / ESG --
+    lines.append("=== LAYER 13: SUSTAINABILITY & ESG SIGNALS ===")
     esg = data.get("sustainability", {})
     any_esg = False
     for stock in portfolio["portfolio"]:
@@ -427,9 +406,9 @@ def build_prompt(portfolio, data, weekend=False, rag_context=""):
         spike = " **TREND SPIKE**" if tr.get("spike") else ""
         lines.append(f"{t}: {w.get('reason','')[:120]}{spike}")
 
-    # -- Layer 15: RAG historical context --
+    # -- Layer 14: RAG historical context --
     if rag_context:
-        lines.append("\n=== LAYER 15: HISTORICAL PATTERN MATCHING (RAG) ===")
+        lines.append("\n=== LAYER 14: HISTORICAL PATTERN MATCHING (RAG) ===")
         lines.append(rag_context)
         lines.append("")
 
@@ -470,7 +449,7 @@ Then provide:
    Only suggest if you have genuine conviction -- zero is fine.
    The watchlist is capped at 5. If it's full and a new discovery is stronger than an existing
    watchlist entry, recommend replacing the weakest one.
-9. SUSTAINABILITY: Flag any ESG concerns from Layer 14 -- governance red flags (fraud lawsuits,
+9. SUSTAINABILITY: Flag any ESG concerns from Layer 13 -- governance red flags (fraud lawsuits,
    auditor changes, insider selling patterns), environmental risks (regulatory, climate exposure),
    or social controversies that could impact thesis or valuation. Only mention if material.
 
@@ -582,7 +561,7 @@ def log_run(data, response, alert_sent):
 def run(test_mode=False, digest_only=False):
     """Execute one full analysis cycle."""
     print(f"\n{'=' * 60}")
-    print(f"  thesis-engine -- {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  markit-engine -- {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'=' * 60}")
 
     portfolio = load_portfolio()
@@ -630,12 +609,11 @@ def run(test_mode=False, digest_only=False):
     if test_mode:
         print("\n  TEST MODE -- Claude's response:")
         print("  " + "\n  ".join(response.split("\n")))
-        print("\n  [No alerts sent in test mode]")
+        print("\n  [No alerts logged in test mode]")
     else:
         # Urgent intraday alert
         if not digest_only and not weekend and should_alert(response):
             subject = extract_subject(response)
-            send_urgent_alert(subject, response, portfolio, data)
             log_notification("urgent", subject, response, data)
             alert_sent = True
 
@@ -644,7 +622,6 @@ def run(test_mode=False, digest_only=False):
             prefix = "Weekend Prep" if weekend else "Daily Digest"
             pnl = data.get("prices", {}).get("__portfolio_pnl_pct__", 0)
             subj = f"{prefix} -- {datetime.now().strftime('%b %d')} | Portfolio {pnl:+.1f}%"
-            send_digest(subj, response, portfolio, data)
             log_notification("digest", subj, response, data)
             alert_sent = True
 
@@ -657,7 +634,7 @@ def run(test_mode=False, digest_only=False):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="thesis-engine")
+    parser = argparse.ArgumentParser(description="markit-engine")
     parser.add_argument("--once", action="store_true", help="Run once and exit")
     parser.add_argument("--loop", action="store_true", help="Run hourly (local)")
     parser.add_argument("--test", action="store_true", help="No alerts, print output only")
